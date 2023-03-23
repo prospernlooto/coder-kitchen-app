@@ -12,13 +12,13 @@ const Kitchen = () => {
                 <div className='container'>
 <div className='row'>
 <div className='col-md-4'>
-            <Toaster />
+            <Toaster name={"Smeg"} />
          </div>
          <div className='col-md-4'>
-            <Toaster />
+          
          </div>
          <div className='col-md-4'>
-            <Toaster />
+          
          </div>
 </div>
                 </div>

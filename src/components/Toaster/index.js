@@ -1,15 +1,21 @@
-import React, { useState, useRef, useContext} from 'react';
+import React, { useState, useRef, useContext, useEffect} from 'react';
 import powerContext from '../../providers/power';
 
-const Toaster = () => {
-
+const Toaster = (props) => {
+const {name} = props
 const {powerStatus} = useContext(powerContext);
 const [statusText, setStatusText] = useState("Off");
 const [statuStyle, setStatuStyle] = useState("text-muted");
 const [toastTimer, settoastTimer] = useState();
 const interval = useRef();
+const electricity = useRef();
 
 const toasterImage = require('../../assets/images/toaster.jpg');
+
+ useEffect(() => {
+  electricity.current = powerStatus;
+  console.log("electricity: " + electricity.current)
+});
 
 const handleToast = () => {
  if(!powerStatus)
@@ -24,15 +30,14 @@ const handleToast = () => {
  }
 
  clearInterval(interval.current);
-  var value = 0;
+ var value = 0;
 
   settoastTimer(value);
   setStatusText("On");
   setStatuStyle('text-success');
-
   interval.current = setInterval(() => {
-    value++;
-    if (value == 30) {
+  value++;
+    if (!electricity.current || value == 30) {
       value = 0;
       handleCancel();
     }
@@ -41,11 +46,6 @@ const handleToast = () => {
 };
 
 const handleCancel = () => {
-
-  if(toastTimer == 0){
-    
-    return;
-  }
   setStatusText("Off");
   setStatuStyle('text-muted'); 
 
@@ -57,12 +57,11 @@ const handleCancel = () => {
   }
 };
 
-
   return (
   <div className="card">
-  <img class="card-img-top" src={toasterImage} alt="Card image cap"></img>
+  <img className="card-img-top" src={toasterImage} alt="Card image cap"></img>
   <div className="card-body">
-    <h5 className="card-title">Toaster</h5>
+    <h5 className="card-title">Toaster {name}</h5>
     <h6 className={`card-subtitle mb-2 ${statuStyle}`}>{statusText}<br/> 
     {toastTimer > 0 && <span style={{fontSize:"small"}}>{'timer: '}{toastTimer}</span>}
     </h6>
