@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext} from 'react';
+import powerContext from '../../providers/power';
 
 const Toaster = () => {
 
-const [status, setStatus] = useState(false);
+const {powerStatus} = useContext(powerContext);
 const [statusText, setStatusText] = useState("Off");
 const [statuStyle, setStatuStyle] = useState("text-muted");
 const [toastTimer, settoastTimer] = useState();
@@ -11,12 +12,18 @@ const interval = useRef();
 const toasterImage = require('../../assets/images/toaster.jpg');
 
 const handleToast = () => {
-  if(toastTimer > 0){
+ if(!powerStatus)
+ {
+  alert("Electricity is off.");
+    return;
+ }
+
+ if(toastTimer > 0){
     alert("toaster is on");
     return;
-  }
-  clearInterval(interval.current);
+ }
 
+ clearInterval(interval.current);
   var value = 0;
 
   settoastTimer(value);
@@ -56,7 +63,9 @@ const handleCancel = () => {
   <img class="card-img-top" src={toasterImage} alt="Card image cap"></img>
   <div className="card-body">
     <h5 className="card-title">Toaster</h5>
-    <h6 className={`card-subtitle mb-2 ${statuStyle}`}>{statusText} {'timer: '}{toastTimer}</h6>
+    <h6 className={`card-subtitle mb-2 ${statuStyle}`}>{statusText}<br/> 
+    {toastTimer > 0 && <span style={{fontSize:"small"}}>{'timer: '}{toastTimer}</span>}
+    </h6>
     <p className="card-text text-justify">Pushing the "toast" button turns on the toaster. Once on, the toaster will toast for 30 seconds before automatically turning off and
     popping the toast. Pushing the "cancel" button at any point will turn the toaster off and pop the toast.</p>
     <span onClick={handleToast}  className="btn btn-primary btn-md text-uppercase" style={{marginRight: 5, width:100}}>Toast</span>
